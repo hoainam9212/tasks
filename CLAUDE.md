@@ -1,5 +1,7 @@
 # Gmail cleanup — handoff notes
 
+> Other task notes: see `galaxy-s25-ultra-search.md` (phone search on Mercari / Yahoo!フリマ).
+
 Account: Gmail of the repo owner. Task: sort the inbox, keep important mail, trash ads/promotions.
 Language: reply to the user in Vietnamese.
 
