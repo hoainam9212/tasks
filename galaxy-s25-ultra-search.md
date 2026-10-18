@@ -34,3 +34,11 @@ snapshots and no seller ratings. Re-run from Claude Desktop (built-in browser) o
 - Seller: ≥100 ratings, ≥98% good, 本人確認済; scan recent bad reviews
 - Condition 目立った傷や汚れなし or better; battery %, ネットワーク利用制限 ○, accounts removed
 - Accessories: box, case, screen protector, cable
+
+## Expanded search (2026-10-18): other models, ≥512GB, released 2025–2026
+User asked to also consider non-Ultra / other brands. Used 512GB price estimates (WebSearch snapshots, unverified):
+- Within ≤130,000円: Galaxy S26 (~97k–155k, colors incl. white / pink gold), Galaxy S25 (~84k–100k),
+  Galaxy S25 Edge (~79k–90k), iPhone 17 (from ~129.8k, mostly 130k–165k), AQUOS R10 (~73k–92k),
+  Xiaomi 15T Pro (~79k–109k; Mocha Gold = closest to brown, verify), iPhone Air (min ~105k, mostly 140k+).
+- Over budget: Galaxy Z Flip7 (~140k–145k), Galaxy S26+ (~139k–150k), Xperia 1 VII (~140k+),
+  iPhone 17 Pro (~155k–200k), Pixel 10 Pro (~180k).
