@@ -43,3 +43,37 @@ Sender notes: `info@kurashi.tepco.co.jp` = bills (keep); `mail@kurashi3.tepco.co
 ## Possible next steps
 - Offer to create Gmail filters so these ad senders skip the inbox in future.
 - The user may want to extend cleanup beyond one month (inbox has ~25,000 threads).
+
+---
+
+# MCP article (Claude Academy course) — handoff notes
+
+Task: the user is writing a Vietnamese blog article summarizing the MCP lessons (~47–57) of
+"Building with the Claude API" (https://academy.claude.com/courses/building-with-the-claude-api/introducing-mcp).
+Style wanted: lively, concrete, not dry theory. Reply in Vietnamese.
+
+## Doc
+- Claude Doc: "MCP không nhạt: 11 bài học từ khóa Building with the Claude API"
+  https://claude.ai/artifact/Mf2Sp7aNDo3ndWELRdz15B (project id a745ed4f-ae94-427c-89dc-7420231e395a,
+  tab 19b119dd-0439, body node cff1850e-9e21, sequence-diagram widget dea1d623-4267).
+- The user has edited the doc since (rev 16+). Read it again before changing anything; keep their edits.
+- Open comment in the doc: lessons are numbered 1–11; ask whether to switch to 47–57.
+
+## Sources
+- academy.claude.com (and skilljar, coursera) are blocked by the cloud environment's network policy.
+- Content came from a learner's notes + code: https://github.com/jaygaha/claude-mcp-course
+  (folders 001–003 and cli_project_mcp). The user should cross-check against the official lessons.
+- The 11 lessons: Introducing MCP, MCP clients, Project setup, Defining tools with MCP, The server
+  inspector, Implementing a client, Defining resources, Accessing resources, Defining prompts,
+  Prompts in the client, MCP review.
+
+## Discussed in chat (not yet in the doc)
+- Explained "tool use thuần" (plain tool use without MCP) and a glossary of terms for the user.
+  Offered to add a short tool-use explanation to the intro.
+- The user found the article similar to Trọng's V-Sharing post "MCP - Kết nối AI với thế giới thực"
+  (concept-only: LLM limits, USB-C analogy, host/client/server, Connectors). Overlap is the intro/concepts
+  (shared source). Proposed: replace the USB-C analogy (e.g. food-delivery app), open with the hands-on
+  `/format plan.md` scene, shorten the client/server concept part. Waiting for the user's choice.
+- "MCP là API của API?" — half right: MCP is a protocol/standard, servers often wrap APIs but need not
+  (course server wraps a dict), it is self-describing via list_tools, has resources/prompts too, and Claude
+  still uses tool use while the client calls the server. Offered to add a "common misconception" section.
