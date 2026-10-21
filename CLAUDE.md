@@ -67,7 +67,15 @@ Style wanted: lively, concrete, not dry theory. Reply in Vietnamese.
   inspector, Implementing a client, Defining resources, Accessing resources, Defining prompts,
   Prompts in the client, MCP review.
 
-## Discussed in chat (not yet in the doc)
+## Done on 2026-10-21 (second pass, doc rev 22)
+- Added to the doc: a "Tool use là gì?" box in the intro; host vs client (1 client : 1 server) bullets;
+  JSON-RPC / initialize / stdio vs Streamable HTTP; section "Hiểu lầm hay gặp: MCP là API của API?";
+  section "Ngoài khóa học: cắm server thật vào dùng" (claude mcp add, .mcp.json, ${ENV} secrets, safety);
+  section "Nếu bạn định thi chứng chỉ Claude" (CCAR-F format, 5 domain weights, 7 MCP points, a self-written
+  sample question); extra sources. Cert facts come from unofficial prep guides
+  (github.com/dnacenta/claude-certified-architect) — user should verify with the official exam guide.
+
+## Discussed in chat (earlier)
 - Explained "tool use thuần" (plain tool use without MCP) and a glossary of terms for the user.
   Offered to add a short tool-use explanation to the intro.
 - The user found the article similar to Trọng's V-Sharing post "MCP - Kết nối AI với thế giới thực"
