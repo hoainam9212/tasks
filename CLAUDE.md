@@ -53,7 +53,8 @@ Task: the user is writing a Vietnamese blog article summarizing the MCP lessons 
 Style wanted: lively, concrete, not dry theory. Reply in Vietnamese.
 
 ## Doc
-- Claude Doc: "MCP không nhạt: 11 bài học từ khóa Building with the Claude API"
+- Claude Doc: "Học MCP qua 11 bài của khóa Building with the Claude API" (renamed 2026-10-22; user dislikes
+  self-praising titles like "không nhạt" — let the content speak)
   https://claude.ai/artifact/Mf2Sp7aNDo3ndWELRdz15B (project id a745ed4f-ae94-427c-89dc-7420231e395a,
   tab 19b119dd-0439, body node cff1850e-9e21, sequence-diagram widget dea1d623-4267).
 - The user has edited the doc since (rev 16+). Read it again before changing anything; keep their edits.
