@@ -76,6 +76,12 @@ Style wanted: lively, concrete, not dry theory. Reply in Vietnamese.
   sample question); extra sources. Cert facts come from unofficial prep guides
   (github.com/dnacenta/claude-certified-architect) — user should verify with the official exam guide.
 
+## Restructured on 2026-10-22 (doc rev 38)
+- User disliked per-lesson headings. Doc is now: Mở bài → Phần 1 MCP là gì → Phần 2 Dựng server và viết
+  tool đầu tiên → Phần 3 Viết client và nối với Claude → Phần 4 Resources và prompts → Phần 5 Tổng kết và
+  mang ra dùng thật → Nếu bạn định thi chứng chỉ Claude → Nguồn. Old lesson sections are H3 under the parts;
+  each part opens with one line naming the matching course lessons. In-text "bài N" refs now point to parts.
+
 ## Discussed in chat (earlier)
 - Explained "tool use thuần" (plain tool use without MCP) and a glossary of terms for the user.
   Offered to add a short tool-use explanation to the intro.
