@@ -82,6 +82,12 @@ Style wanted: lively, concrete, not dry theory. Reply in Vietnamese.
   mang ra dùng thật → Nếu bạn định thi chứng chỉ Claude → Nguồn. Old lesson sections are H3 under the parts;
   each part opens with one line naming the matching course lessons. In-text "bài N" refs now point to parts.
 
+## V-Sharing export (2026-10-22)
+- Publish-ready copy: mcp-article/hoc-mcp-qua-11-bai.md (no H1/byline, starts at H2, no code lines starting
+  with "#" — V-Sharing's SEO check "Thứ tự heading đúng" failed on those) + mcp-article/mcp-mot-cau-hoi-10-buoc.png
+  (diagram, alt text in the .md). The doc keeps its H1 title; otherwise doc and .md match (doc rev 41).
+  If the doc changes, regenerate the .md the same way.
+
 ## Discussed in chat (earlier)
 - Explained "tool use thuần" (plain tool use without MCP) and a glossary of terms for the user.
   Offered to add a short tool-use explanation to the intro.
