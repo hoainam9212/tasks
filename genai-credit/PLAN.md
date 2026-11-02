@@ -69,44 +69,48 @@ Dựa trên `system-design.md` của Zumen-Agent (chưa xem code thật — tên
 
 ### 4.1 Nguyên tắc
 1. **Cổng (interface) theo chức năng, không theo nhà cung cấp.** Code nghiệp vụ chỉ gọi `Reranker`, `GroundedAnswerer`…
-2. **Chọn bản cài đặt bằng biến môi trường.** Đổi nhà cung cấp = sửa `.env` + khởi động lại, không sửa code.
+2. **Config chỉ chứa dịch vụ được credit trả** (4 dịch vụ ✅). Mỗi dịch vụ có một cờ bật/tắt; tắt thì Zumen chạy đường hiện có (`pg_bigm`, LLM hiện tại). Bật/tắt = sửa `.env` + khởi động lại, không sửa code.
 3. **Project GCP riêng cho credit** (`zumen-genai`), gắn billing account có credit. Dễ theo dõi, dễ tắt.
 4. **Mặc định giữ hành vi hiện tại** (`pg_bigm`, LLM hiện có).
 5. **Giữ bất biến 1 (cô lập org).** Không nạp hồ sơ của khách vào data store Vertex. Data store chỉ chứa văn bản công khai (国交省 / NILIM). Ranking / Check Grounding chỉ gửi đoạn văn tạm thời, không lưu chỉ mục.
 
 ### 4.2 Config mới (`core/config.py`, tiền tố `ZUMEN_GENAI_*`)
 
+Chỉ gồm dịch vụ được credit trả. Không có `pg_bigm`, LLM hiện tại hay Gemini trực tiếp ở đây.
+
 ```env
+# ── Trial credit for GenAI App Builder ──
 # Project gắn billing account có credit (tách khỏi project chạy VM)
 ZUMEN_GENAI_PROJECT=zumen-genai
 ZUMEN_GENAI_LOCATION=global
 
-# Chọn bản cài đặt cho từng cổng
-ZUMEN_GENAI_RETRIEVER=pg_bigm            # pg_bigm | vertex_search
-ZUMEN_GENAI_RERANKER=none                # none | vertex_ranking
-ZUMEN_GENAI_ANSWERER=llm                 # llm | vertex_grounded
-ZUMEN_GENAI_GROUNDING_CHECK=none         # none | vertex_check
+# Vertex AI Search — tra văn bản tiêu chuẩn công khai (国交省 / NILIM)
+ZUMEN_GENAI_SEARCH_ENABLED=0
+ZUMEN_GENAI_SEARCH_DATASTORE=projects/zumen-genai/locations/global/collections/default_collection/dataStores/standards-public
 
-# Tài nguyên Vertex
-ZUMEN_GENAI_STANDARDS_DATASTORE=projects/zumen-genai/locations/global/collections/default_collection/dataStores/standards-public
+# Ranking API — xếp hạng lại kết quả pg_bigm
+ZUMEN_GENAI_RANKING_ENABLED=0
 ZUMEN_GENAI_RANKING_CONFIG=default_ranking_config
 
-# Vận hành
-ZUMEN_GENAI_MODE=live                    # live | record | replay (giống ZUMEN_LLM_MODE)
-ZUMEN_GENAI_TIMEOUT_S=8
-ZUMEN_GENAI_FALLBACK=1                   # lỗi hoặc timeout thì quay về bản local
+# Grounded Generation API — trả lời kèm trích dẫn
+ZUMEN_GENAI_GROUNDED_ENABLED=0
+
+# Check Grounding API — kiểm câu LLM viết có đúng căn cứ
+ZUMEN_GENAI_CHECK_GROUNDING_ENABLED=0
 ```
 
-Khi credit hết hạn: `RERANKER=none`, `ANSWERER=llm`, `RETRIEVER=pg_bigm`.
+- Cờ `=0`, hoặc Vertex lỗi / quá thời gian chờ (mặc định 8 giây, đặt trong code) → tự quay về đường hiện có.
+- Cassette record/replay dùng chung `ZUMEN_LLM_MODE` sẵn có, không thêm biến mới.
+- Khi credit hết hạn: đặt 4 cờ `*_ENABLED=0`.
 
 ### 4.3 Cấu trúc code (package mới `zumen/genai/`)
 
 ```
 backend/zumen/genai/
 ├── ports.py          # Protocol: Retriever, Reranker, GroundedAnswerer, GroundingChecker
-├── registry.py       # đọc config → trả về bản cài đặt; bọc fallback + ghi usage
-├── local/            # pg_bigm_retriever.py, noop_reranker.py, llm_answerer.py, noop_checker.py
-├── vertex/           # search.py, ranking.py, grounded.py, check_grounding.py
+├── registry.py       # đọc cờ *_ENABLED → bản Vertex hoặc đường hiện có; bọc fallback + ghi usage
+├── local/            # bọc code hiện có (pg_bigm, llm) — không có trong config
+├── vertex/           # search.py, ranking.py, grounded.py, check_grounding.py (4 dịch vụ credit)
 └── cassette.py       # record/replay, dùng lại cơ chế của llm
 ```
 
@@ -119,7 +123,7 @@ class GroundedAnswerer(Protocol):
     def answer(self, ctx: OrgCtx, query: str, passages: list[Passage]) -> Answer: ...  # Answer có citations
 ```
 
-`registry.py`: chọn bản cài đặt theo config; nếu bản Vertex lỗi hoặc quá `TIMEOUT_S` thì chuyển sang bản local, phát sự kiện, ghi log; ghi mỗi lần gọi vào bảng usage.
+`registry.py`: cờ bật → dùng bản Vertex; cờ tắt → đường hiện có. Bản Vertex lỗi hoặc quá thời gian chờ thì chuyển sang đường hiện có, phát sự kiện, ghi log. Ghi mỗi lần gọi Vertex vào bảng usage.
 
 ### 4.4 Các bước / PR
 
