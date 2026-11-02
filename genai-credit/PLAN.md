@@ -44,13 +44,37 @@ Google có 3 SKU group có thể là phạm vi của credit này. Credit của m
 - **Document AI** gọi API riêng (khác với layout parser bật trong data store)
 - Gemini qua API key của **Google AI Studio** (aistudio.google.com)
 
-### Cách xác nhận nhóm ❓ (tốn < ¥10)
-1. Tạo project thử, gắn vào billing account có credit.
-2. Mở **Vertex AI Studio** trong Console (không phải aistudio.google.com) → gửi vài câu cho Gemini Flash.
-3. Tuỳ chọn: tạo 1 data store có bật layout parser, nạp 1 file PDF.
-4. Sau ~24 giờ: **Billing → Reports**, lọc theo project, nhóm theo **SKU**, xem cột Credits.
-   - Credit có trừ dòng Gemini → nhóm ❓ thuộc A → dùng được.
-   - Tính vào thẻ → chỉ dùng nhóm ✅.
+### Thử nhanh nhóm ❓
+
+Không cần thử từng dịch vụ: mỗi group là một gói, nên **3 phép thử là đủ** để biết credit thuộc group nào.
+
+| Phép thử | Có trong group | Nếu credit trả → |
+|---|---|---|
+| Ranking API (đối chứng) | A, B, C | Project gắn đúng billing account. Nếu cái này cũng **không** được trả → sai billing account, sửa trước. |
+| Gemini 2.5 Flash | chỉ A | Group **A** |
+| Grounding with Google Search | A, B | Group **A hoặc B** |
+| Layout parser / OCR | chỉ C | Group **C** |
+
+**Cách 1 — script (khoảng 2 phút chạy, chi phí < ¥10):**
+```bash
+gcloud auth login
+./genai-credit/probe_credit.sh run <PROJECT_ID> mot-file-nho.pdf   # PDF 1–2 trang
+# ~24 giờ sau: Billing → Reports → lọc project → Group by SKU → xem cột Credits
+./genai-credit/probe_credit.sh cleanup <PROJECT_ID>               # xoá data store thử
+```
+Project dùng để thử phải gắn vào billing account có credit (script in ra billing account để kiểm).
+
+**Cách 2 — hỏi Google Billing Support (miễn phí, có khi nhanh hơn chờ Reports):**
+Console → Billing → Support → tạo case: *"Credit 'Trial credit for GenAI App Builder' trên billing account này áp dụng cho SKU group nào? Có gồm Gemini trên Vertex AI không?"*
+
+**Đọc kết quả:**
+| Gemini | Grounding Google Search | Layout / OCR | Group | Nhóm ❓ dùng được |
+|:-:|:-:|:-:|:-:|---|
+| ✅ | ✅ | — | **A** | Gemini (cả Batch, Caching), Embeddings, Imagen, Veo, Grounding Google Search / Maps |
+| ❌ | ✅ | ❌ | **B** | Grounding Google Search / Maps |
+| ❌ | ❌ | ✅ | **C** | Layout parser, OCR, Data Index, Dialogflow CX |
+
+Không thử Veo (một video tốn vài USD) và Dialogflow CX (có trial credit riêng nên kết quả bị lẫn): suy ra từ bảng trên.
 
 Ghi kết quả vào đây sau khi thử: `Group = ?`
 
@@ -146,8 +170,8 @@ Kiểm thử / CI: mọi lệnh gọi Vertex đi qua cassette (`replay` trong CI
 | Tuần 1 | PR0 + PR1 + PR2. Một ngày sau khi gọi thử, xem Billing để xác nhận credit có trừ. |
 | Tuần 2–3 | PR3 (Ranking), PR4 (data store tiêu chuẩn) |
 | Tuần 4–5 | PR5, PR6 |
-| Tháng 3/2027 | Đánh giá: giữ dịch vụ nào trả phí thật, cái nào chuyển về bản local |
-| Trước 11/04/2027 | Đổi config sang bản local (hoặc giữ nếu đáng tiền); xoá data store không dùng |
+| Tháng 3/2027 | Đánh giá: giữ dịch vụ nào trả phí thật, cái nào tắt |
+| Trước 11/04/2027 | Tắt các cờ `*_ENABLED` không giữ; xoá data store không dùng |
 
 ### 4.6 Nếu credit thuộc group A (Gemini được trả)
 - Gắn project chạy VM `zumen` vào billing account có credit → toàn bộ LLM của agent trả bằng credit, không sửa code.
@@ -157,7 +181,7 @@ Kiểm thử / CI: mọi lệnh gọi Vertex đi qua cassette (`replay` trong CI
 - Tránh **Provisioned Throughput** (cam kết thuê công suất, rất đắt).
 
 ## 5. Việc tiếp theo
-- [ ] Thử Gemini + layout parser, xem Billing → ghi `Group = ?` ở mục 2
+- [ ] Chạy `probe_credit.sh` (hoặc hỏi Billing Support), xem Billing → ghi `Group = ?` ở mục 2
 - [ ] Mở repo Zumen-Agent trong Claude Desktop, đối chiếu tên module thật với mục 4.3
 - [ ] Bắt đầu PR0 + PR1
 
