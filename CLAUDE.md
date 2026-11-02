@@ -43,3 +43,29 @@ Sender notes: `info@kurashi.tepco.co.jp` = bills (keep); `mail@kurashi3.tepco.co
 ## Possible next steps
 - Offer to create Gmail filters so these ad senders skip the inbox in future.
 - The user may want to extend cleanup beyond one month (inbox has ~25,000 threads).
+
+---
+
+# GenAI App Builder credit + Zumen-Agent — handoff notes
+
+Full notes and plan: `genai-credit/PLAN.md`. Quick probe script: `genai-credit/probe_credit.sh`.
+
+## Status (as of 2026-11-02)
+- Credit: "Trial credit for GenAI App Builder", ¥159,885 (~1,000 USD), unused, expires **2027-04-11**.
+- Surely covered: Vertex AI Search, Ranking API, Check Grounding API, Grounded Generation API.
+- Unknown until tested: Gemini on Vertex, Embeddings, Imagen/Veo, Grounding with Google Search,
+  Vertex AI Search layout parser/OCR, Dialogflow CX. Which SKU group (A/B/C) applies is still `?`.
+- Zumen-Agent is NOT yet linked to the billing account that holds the credit.
+- Zumen-Agent repo is not in this repo; only its `system-design.md` was reviewed. Module names in the
+  plan are inferred and must be checked against real code.
+- The previous (cloud) session had no Google Cloud access (`gcloud` unauthenticated).
+
+## Next session (run locally in Claude Desktop, Code, Local)
+1. User runs `gcloud auth login` on their machine first. Never ask for or store keys/passwords.
+2. Check the credit's billing account and a test project linked to it
+   (`gcloud billing accounts list`, `gcloud billing projects describe <PROJECT>`).
+3. Run `./genai-credit/probe_credit.sh run <PROJECT> <small.pdf>` (cost < ¥10), get user approval first.
+   After ~24h: Billing → Reports → group by SKU → Credits column; record `Group = ?` in PLAN.md §2.
+   Then `./genai-credit/probe_credit.sh cleanup <PROJECT>`.
+4. Open the Zumen-Agent repo and start PR0/PR1 from PLAN.md §4.
+   Config `ZUMEN_GENAI_*` must contain ONLY credit-covered services (user's rule).
