@@ -47,25 +47,27 @@ Google có 3 SKU group có thể là phạm vi của credit này. Credit của m
 - **Document AI** gọi API riêng (khác với layout parser bật trong data store)
 - Gemini qua API key của **Google AI Studio** (aistudio.google.com)
 
-### Thử nhanh nhóm ❓
+### Thử tất cả dịch vụ còn lại
 
-Không cần thử từng dịch vụ: mỗi group là một gói, nên **3 phép thử là đủ** để biết credit thuộc group nào.
+Billing Reports chỉ hiện dịch vụ **đã dùng**, nên phải gọi thử mỗi dịch vụ một lần.
+Script `probe_credit.sh` gọi hết (Gemini đã biết là mất phí nên bỏ):
 
-| Phép thử | Có trong group | Nếu credit trả → |
+| Phép thử | Có trong group | Nếu "Other savings" ≠ ¥0 |
 |---|---|---|
-| Ranking API (đối chứng) | A, B, C | Project gắn đúng billing account. Nếu cái này cũng **không** được trả → sai billing account, sửa trước. |
-| Gemini 2.5 Flash | chỉ A | Group **A** |
-| Grounding with Google Search | A, B | Group **A hoặc B** |
-| Layout parser / OCR | chỉ C | Group **C** |
+| Ranking, Check Grounding, Grounded Generation, Web Grounded Generation, Search API | A, B, C | Xác nhận ✅. Nếu **không** được trả → sai billing account, sửa trước. |
+| Grounding with Google Search (qua Gemini) | A, B | Group **B** → dùng được Grounding Google Search / Maps |
+| Layout Parsing, OCR, Data Index | C | Group **C** → dùng được Layout, OCR, Data Index, Dialogflow CX |
 
-**Cách 1 — script (khoảng 2 phút chạy, chi phí < ¥10):**
+**Cách 1 — script (khoảng 3 phút chạy, chi phí < ¥30):**
 ```bash
 gcloud auth login
 ./genai-credit/probe_credit.sh run <PROJECT_ID> mot-file-nho.pdf   # PDF 1–2 trang
-# ~24 giờ sau: Billing → Reports → lọc project → Group by SKU → xem cột Credits
+# ~24 giờ sau: Billing → Reports → Time range = hôm chạy, Services = All, Group by = SKU
+#              → cột "Other savings" từng dòng
 ./genai-credit/probe_credit.sh cleanup <PROJECT_ID>               # xoá data store thử
 ```
-Project dùng để thử phải gắn vào billing account có credit (script in ra billing account để kiểm).
+Project dùng để thử phải gắn vào billing account có credit (ví dụ "Zumen GenAI credit"; script in ra billing account để kiểm).
+Dòng Gemini trong Reports (token của phép thử Google Search) sẽ mất phí — bình thường, chỉ xem dòng *Grounding with Google Search*.
 
 **Cách 2 — hỏi Google Billing Support (miễn phí, có khi nhanh hơn chờ Reports):**
 Console → Billing → Support → tạo case: *"Credit 'Trial credit for GenAI App Builder' trên billing account này áp dụng cho SKU group nào? Có gồm Gemini trên Vertex AI không?"*
