@@ -28,17 +28,20 @@ Google có 3 SKU group có thể là phạm vi của credit này. Credit của m
 - Check Grounding API
 - Grounded Generation API (kể cả Web Grounded Generation)
 
+> **Đã xác nhận 2026-11-10: credit KHÔNG thuộc group A.** Billing → Reports: project "Zumen GenAI credit",
+> SKU *Gemini 3 Flash Text Output - Predictions* ngày 2026-11-02: Usage ¥3, Other savings ¥0, Subtotal ¥3.
+> → Gemini, Embeddings, Imagen, Veo đều **phải trả phí**. Credit thuộc group **B hoặc C**.
+
 ### ❓ Chưa biết — phải thử mới biết
 | Dịch vụ | Có trong group |
 |---|---|
-| Gemini trên Vertex AI (2.0 / 2.5 / 3 Flash, 2.5 / 3.x Pro, Batch, Context Caching) | A |
-| Vertex AI Embeddings (text, multimodal) | A |
-| Imagen 3, Veo 2 / Veo 3 | A |
-| Grounding with Google Search / Google Maps | A, B |
+| Grounding with Google Search / Google Maps | B (A đã loại) |
 | Vertex AI Search: Layout Parser, OCR, Data Index | C |
 | Dialogflow CX / Conversational Agents | C |
 
 ### 💰 Chắc chắn phải trả phí
+- **Gemini trên Vertex AI** (gọi trực tiếp, kể cả Batch, Context Caching), **Embeddings**, **Imagen**, **Veo** — đã xác nhận 2026-11-10
+- Các SKU khác trong service Vertex AI Search nhưng không thuộc SKU group: Gemini Business / Gemini Enterprise subscription, AlphaEvolve tokens
 - Compute Engine (VM), Artifact Registry, Cloud Storage, Cloud Run
 - IAP, egress mạng, Cloud Logging
 - **Document AI** gọi API riêng (khác với layout parser bật trong data store)
@@ -76,7 +79,9 @@ Console → Billing → Support → tạo case: *"Credit 'Trial credit for GenAI
 
 Không thử Veo (một video tốn vài USD) và Dialogflow CX (có trial credit riêng nên kết quả bị lẫn): suy ra từ bảng trên.
 
-Ghi kết quả vào đây sau khi thử: `Group = ?`
+Kết quả: `Group = B hoặc C` (A đã loại, 2026-11-10). Còn lại cần tìm: khoản ¥3.41 credit đã trừ là SKU nào
+(Billing → Reports, từ 2026-04-10, mọi service, Group by SKU, cột Other savings ≠ 0).
+Credit Gemini 3 Flash không còn cần thử nữa.
 
 ## 3. Nhận xét bảng kapibot
 
@@ -173,7 +178,10 @@ Kiểm thử / CI: mọi lệnh gọi Vertex đi qua cassette (`replay` trong CI
 | Tháng 3/2027 | Đánh giá: giữ dịch vụ nào trả phí thật, cái nào tắt |
 | Trước 11/04/2027 | Tắt các cờ `*_ENABLED` không giữ; xoá data store không dùng |
 
-### 4.6 Nếu credit thuộc group A (Gemini được trả)
+### 4.6 Nếu credit thuộc group A (Gemini được trả) — KHÔNG áp dụng (đã loại A ngày 2026-11-10)
+
+LLM của agent Zumen (Planner, Fix Strategist…) là chi phí thật. Muốn có câu trả lời do Gemini viết mà vẫn dùng credit
+thì đi qua **Grounded Generation API** (tính vào SKU Vertex AI Search). Phần dưới chỉ giữ để tham khảo.
 - Gắn project chạy VM `zumen` vào billing account có credit → toàn bộ LLM của agent trả bằng credit, không sửa code.
 - Dùng Gemini Batch + Context Caching cho nạp hàng loạt kho tri thức (K4).
 - Gemini multimodal cho số hoá PDF / TIF (phase 2).

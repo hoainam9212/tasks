@@ -53,8 +53,12 @@ Full notes and plan: `genai-credit/PLAN.md`. Quick probe script: `genai-credit/p
 ## Status (as of 2026-11-02)
 - Credit: "Trial credit for GenAI App Builder", ¥159,885 (~1,000 USD), unused, expires **2027-04-11**.
 - Surely covered: Vertex AI Search, Ranking API, Check Grounding API, Grounded Generation API.
-- Unknown until tested: Gemini on Vertex, Embeddings, Imagen/Veo, Grounding with Google Search,
-  Vertex AI Search layout parser/OCR, Dialogflow CX. Which SKU group (A/B/C) applies is still `?`.
+- NOT covered (verified 2026-11-10 in Billing Reports: Gemini 3 Flash ¥3, Other savings ¥0):
+  Gemini on Vertex, Embeddings, Imagen/Veo. So the SKU group is B or C, not A.
+- Still unknown: Grounding with Google Search (B), Vertex AI Search layout parser/OCR/Data Index,
+  Dialogflow CX (C). The credit has dropped ¥3.41 from some other SKU: find it in Reports
+  (since 2026-04-10, all services, group by SKU, Other savings ≠ 0) to tell B from C.
+- A GCP project "Zumen GenAI credit" exists on billing account "My Billing Account".
 - Zumen-Agent is NOT yet linked to the billing account that holds the credit.
 - Zumen-Agent repo is not in this repo; only its `system-design.md` was reviewed. Module names in the
   plan are inferred and must be checked against real code.
@@ -64,7 +68,7 @@ Full notes and plan: `genai-credit/PLAN.md`. Quick probe script: `genai-credit/p
 1. User runs `gcloud auth login` on their machine first. Never ask for or store keys/passwords.
 2. Check the credit's billing account and a test project linked to it
    (`gcloud billing accounts list`, `gcloud billing projects describe <PROJECT>`).
-3. Run `./genai-credit/probe_credit.sh run <PROJECT> <small.pdf>` (cost < ¥10), get user approval first.
+3. If still needed, run `./genai-credit/probe_credit.sh run <PROJECT> <small.pdf>` (cost < ¥10), get user approval first.
    After ~24h: Billing → Reports → group by SKU → Credits column; record `Group = ?` in PLAN.md §2.
    Then `./genai-credit/probe_credit.sh cleanup <PROJECT>`.
 4. Open the Zumen-Agent repo and start PR0/PR1 from PLAN.md §4.
