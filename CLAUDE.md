@@ -50,26 +50,36 @@ Sender notes: `info@kurashi.tepco.co.jp` = bills (keep); `mail@kurashi3.tepco.co
 
 Full notes and plan: `genai-credit/PLAN.md`. Quick probe script: `genai-credit/probe_credit.sh`.
 
-## Status (as of 2026-11-02)
-- Credit: "Trial credit for GenAI App Builder", ¥159,885 (~1,000 USD), unused, expires **2027-04-11**.
-- Surely covered: Vertex AI Search, Ranking API, Check Grounding API, Grounded Generation API.
+## Status (as of 2026-11-10)
+- Credit: "Trial credit for GenAI App Builder", ¥159,885 (~1,000 USD), expires **2027-04-11**.
+  Remaining ¥159,881.59 (¥3.41 used by some SKU, not yet identified). Billing account: "My Billing Account".
+  The Credits page "Usage scope" only says "Certain usage; see the terms of the promotion" (no group named).
+- Surely covered (in every candidate SKU group): Vertex AI Search (Search API), Ranking API,
+  Check Grounding API, Grounded Generation API.
 - NOT covered (verified 2026-11-10 in Billing Reports: Gemini 3 Flash ¥3, Other savings ¥0):
   Gemini on Vertex, Embeddings, Imagen/Veo. So the SKU group is B or C, not A.
-- Still unknown: Grounding with Google Search (B), Vertex AI Search layout parser/OCR/Data Index,
-  Dialogflow CX (C). The credit has dropped ¥3.41 from some other SKU: find it in Reports
-  (since 2026-04-10, all services, group by SKU, Other savings ≠ 0) to tell B from C.
-- A GCP project "Zumen GenAI credit" exists on billing account "My Billing Account".
-- Zumen-Agent is NOT yet linked to the billing account that holds the credit.
-- Zumen-Agent repo is not in this repo; only its `system-design.md` was reviewed. Module names in the
-  plan are inferred and must be checked against real code.
-- The previous (cloud) session had no Google Cloud access (`gcloud` unauthenticated).
+  Also paid: Gemini Business/Enterprise subscriptions and AlphaEvolve SKUs, even though they sit
+  under the "Vertex AI Search" service.
+- Still unknown: Grounding with Google Search (→ group B), Vertex AI Search layout parser/OCR/Data Index,
+  Dialogflow CX (→ group C).
+- GCP project "Zumen GenAI credit" exists on the credit's billing account (its project ID is not recorded yet).
+- Zumen-Agent itself is NOT yet linked to the credit. Its repo is not here; only its `system-design.md`
+  was reviewed, so module names in PLAN.md §4 are inferred.
+- The cloud sessions had no Google Cloud access (`gcloud` unauthenticated).
 
-## Next session (run locally in Claude Desktop, Code, Local)
-1. User runs `gcloud auth login` on their machine first. Never ask for or store keys/passwords.
-2. Check the credit's billing account and a test project linked to it
-   (`gcloud billing accounts list`, `gcloud billing projects describe <PROJECT>`).
-3. If still needed, run `./genai-credit/probe_credit.sh run <PROJECT> <small.pdf>` (cost < ¥10), get user approval first.
-   After ~24h: Billing → Reports → group by SKU → Credits column; record `Group = ?` in PLAN.md §2.
-   Then `./genai-credit/probe_credit.sh cleanup <PROJECT>`.
-4. Open the Zumen-Agent repo and start PR0/PR1 from PLAN.md §4.
+## Next session (user plans to continue tonight in Claude Desktop, Code, Local)
+1. Ask the user to run `gcloud auth login` themselves. Never ask for or store keys/passwords.
+2. Find the project ID: `gcloud projects list` → the one named "Zumen GenAI credit".
+   Confirm billing: `gcloud billing projects describe <PROJECT_ID>`.
+3. Ask the user for a small 1–2 page PDF path, get approval, then run
+   `./genai-credit/probe_credit.sh run <PROJECT_ID> <small.pdf>` (cost < ¥30). It probes Ranking,
+   Check Grounding, Grounded Generation, Web Grounded Generation, Search API (expected covered),
+   Grounding with Google Search (B?) and layout parser/OCR/Data Index (C?). Gemini is not re-tested.
+   The script is only syntax-checked so far; if a call prints LỖI, fix the request and re-run that part.
+4. Next day: Billing → Reports, Time range = probe day, Services = All, Group by = SKU →
+   "Other savings" ≠ ¥0 means covered. Record results in PLAN.md §2 and here, then
+   `./genai-credit/probe_credit.sh cleanup <PROJECT_ID>`.
+5. Also: widen Reports to 2026-04-10..today to find the SKU behind the ¥3.41; suggest a Billing Support
+   case asking which SKUs the credit covers (free, authoritative).
+6. Then open the Zumen-Agent repo and start PR0/PR1 from PLAN.md §4.
    Config `ZUMEN_GENAI_*` must contain ONLY credit-covered services (user's rule).
